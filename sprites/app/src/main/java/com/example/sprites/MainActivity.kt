@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
-
+        this.supportActionBar?.hide()
         setContentView(GameSurface(this))
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }

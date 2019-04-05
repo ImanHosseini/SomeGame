@@ -7,14 +7,17 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import org.jbox2d.common.Vec2;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
-
+    boolean touch_down = false;
+    Vec2 touch_vec;
     private GameThread gameThread;
     private GameCore gcore;
 
     private Block chibi1;
+    float canvasTop = 0.0f;
 
     public GameSurface(Context context)  {
         super(context);
@@ -27,8 +30,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.getHolder().addCallback(this);
     }
 
-    public void update()  {
-        gcore.update();
+    public void update(long waitTime)  {
+        gcore.update(waitTime);
     }
 
 
@@ -36,6 +39,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas)  {
         super.draw(canvas);
+
         gcore.draw(canvas);
     }
 
@@ -71,6 +75,26 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry= true;
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (gcore.state== GameCore.GameState.WAIT_FOR_INPUT && event.getAction() == MotionEvent.ACTION_DOWN) {
+            if(gcore.gbodies.get(gcore.myCanon).inDelta(new Vec2(event.getX(),event.getY()),110.0f)){
+                touch_down = true;
+                touch_vec = new Vec2(event.getX(),event.getY());
+                return true;
+            }
+        }
+
+        if (touch_down && event.getAction() == MotionEvent.ACTION_UP) {
+           touch_down = false;
+           System.out.println(touch_vec.x+"&&"+touch_vec.y+"**"+event.getX()+"&&"+event.getY());
+           gcore.shootMyCanon(touch_vec,new Vec2(event.getX(),event.getY()));
+        }
+
+        return false;
     }
 
 }

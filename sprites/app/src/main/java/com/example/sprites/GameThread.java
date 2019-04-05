@@ -17,6 +17,7 @@ public class GameThread extends Thread {
     @Override
     public void run()  {
         long startTime = System.nanoTime();
+        long waitTime = 10L;
 
         while(running)  {
             Canvas canvas= null;
@@ -26,7 +27,7 @@ public class GameThread extends Thread {
 
                 // Synchronized
                 synchronized (canvas)  {
-                    this.gameSurface.update();
+                    this.gameSurface.update(waitTime);
                     this.gameSurface.draw(canvas);
                 }
             }catch(Exception e)  {
@@ -40,11 +41,11 @@ public class GameThread extends Thread {
             long now = System.nanoTime() ;
             // Interval to redraw game
             // (Change nanoseconds to milliseconds)
-            long waitTime = (now - startTime)/1000000;
+            waitTime = (now - startTime)/1000000;
             if(waitTime < 10)  {
                 waitTime= 10; // Millisecond.
             }
-            System.out.print(" Wait Time="+ waitTime);
+            // System.out.print(" Wait Time="+ waitTime);
 
             try {
                 // Sleep.
@@ -53,7 +54,7 @@ public class GameThread extends Thread {
 
             }
             startTime = System.nanoTime();
-            System.out.print(".");
+            // System.out.print(".");
         }
     }
 
